@@ -316,7 +316,7 @@ class sample_admintool {
                 return false;                
             }
             // set message on success
-            $this->setMessage('msg_insert_record');
+            $this->setMessage($this->lang('msg_insert_record'));
             return true;
         }
         else {
