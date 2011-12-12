@@ -35,8 +35,8 @@ global $database;
 global $admin;
 
 $SQL =  "CREATE TABLE IF NOT EXISTS ".TABLE_PREFIX."mod_sample_admintool (".
-        "sample_id INT(11) NOT NULL AUTO_INCREMENT,".
-        "sample_title VARCHAR(255) NOT NULL DEFAULT '',".
+        "sample_id INT(11) NOT NULL DEFAULT '1',".
+        "sample_subject VARCHAR(255) NOT NULL DEFAULT '',".
         "sample_text TEXT NOT NULL DEFAULT '',".
         "PRIMARY KEY (sample_id))";
 

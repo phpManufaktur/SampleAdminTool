@@ -31,3 +31,13 @@ if (defined('WB_PATH')) {
 }
 // end include class.secure.php
 
+global $database;
+global $admin;
+
+$SQL = "DROP TABLE ".TABLE_PREFIX."mod_sample_admintool";
+
+$database->query($SQL);
+
+if ($database->is_error()) {
+    $admin->print_error('[UNINSTALL TABLE] '.$database->get_error());
+}
