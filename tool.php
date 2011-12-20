@@ -502,7 +502,7 @@ class sample_admintool {
     } // getDialog()
     
     /**
-     * This function check the dialog for changes, calls the function setRecorc()
+     * This function check the dialog for changes, calls the function setRecord()
      * if anything has changed and return the dialog of the class_admintool
      * 
      * @return string dialog or boolean false on error
