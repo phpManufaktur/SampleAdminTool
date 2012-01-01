@@ -268,9 +268,9 @@ class sample_admintool {
     } // getRecord()
     
     /**
-     * Set the database record to the values of the $record
+     * Set the database record to the values of the $record array
      * 
-     * Expects at least to fields in $record:
+     * Expects at least two fields in $record:
      * 
      * $record['subject'] - the new value for the field sample_subject
      * $record['text'] - the new value for the field sample_text
