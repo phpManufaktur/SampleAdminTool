@@ -60,28 +60,28 @@ require_once(WB_PATH.'/modules/'.WYSIWYG_EDITOR.'/include.php');
 
 /**
  * Sample class for an Admin-Tool
- * 
+ *
  * This class handles a simple database record with textfield for a subject and
  * a html field for any text and show this fields with additional informations
  * in the backend as admin-tool.
- * 
+ *
  * The constructor set default variables and read the record from database, the
  * public function action() handles all requests and return the desired result.
- * 
+ *
  * @author Ralf Hertsch (ralf.hertsch@phpmanufaktur.de)
  *
  */
 class sample_admintool {
-    
-    // needed REQUESTs for the action handler and for access to the fields 
+
+    // needed REQUESTs for the action handler and for access to the fields
     const REQUEST_ACTION = 'act';    // action handler
-    const REQUEST_SUBJECT = 'sub';   // subject field 
+    const REQUEST_SUBJECT = 'sub';   // subject field
     const REQUEST_TEXT = 'txt';      // text field
-    
+
     // needed constants for the different actions
     const ACTION_DEFAULT = 'def';    // action: default
     const ACTION_CHECK = 'chk';      // action: check the dialog for changes
-    
+
     private $toolLink = '';          // backend link to the sample_admintool
     private $templatePath = '';      // path to the used templates
     private $error = '';             // holds error messages
@@ -89,10 +89,10 @@ class sample_admintool {
     private $fieldID = -1;           // field: sample_id
     private $fieldSubject = '';      // field: sample_subject
     private $fieldText = '';         // field: sample_text
-    
+
     /**
      * Constructor for class sample_admintool
-     * 
+     *
      * Set default timezone, read the database record and init needed variables
      */
     public function __construct() {
@@ -105,7 +105,7 @@ class sample_admintool {
         // set the template path
         $this->setTemplatePath(WB_PATH . '/modules/' . basename(dirname(__FILE__)) . '/templates/');
     } // __construct()
-    
+
     /**
      * @return the $message
      */
@@ -119,10 +119,10 @@ class sample_admintool {
     protected function setMessage($message) {
         $this->message = $message;
     }
-    
+
     /**
      * Return boolean TRUE if a message is set
-     * 
+     *
      * @return boolean
      */
     protected function isMessage() {
@@ -131,13 +131,13 @@ class sample_admintool {
 
 	/**
      * Return the with $key desired language string
-     * 
+     *
      * @param string $key
      */
     protected function lang($key) {
         return $GLOBALS['LANG'][$key];
     } // language()
-    
+
     /**
      * @return the $templatePath
      */
@@ -179,18 +179,18 @@ class sample_admintool {
     protected function setError($error) {
         $this->error = $error;
     }
-    
+
     protected function isError() {
         return (bool) !empty($this->error);
     } // isError()
-    
+
 	/**
      * @return the $fieldID
      */
     protected function getFieldID() {
         return $this->fieldID;
     }
-    
+
     /**
      * @param field_type $fieldID
      */
@@ -204,44 +204,44 @@ class sample_admintool {
     protected function getFieldSubject() {
         return $this->fieldSubject;
     }
-    
+
     /**
      * @param field_type $fieldSubject
      */
     protected function setFieldSubject($fieldSubject) {
         $this->fieldSubject = $fieldSubject;
     }
-    
+
 	/**
      * @return the $fieldText
      */
     protected function getFieldText() {
         return $this->fieldText;
     }
-    
+
     /**
      * @param field_type $fieldText
      */
     protected function setFieldText($fieldText) {
         $this->fieldText = $fieldText;
     }
-    	
+
 	/**
-	 * Read the record with the ID 1 from the database and set the 
+	 * Read the record with the ID 1 from the database and set the
 	 * sample_admintools variables using
-	 * 
+	 *
 	 * $this->setFieldID()
 	 * $this->setFieldSubject()
 	 * $this->setFieldText()
-	 * 
+	 *
 	 * Set defaults if the record not exists and set fieldID to -1.
-	 * 
+	 *
 	 * @return boolean TRUE on success and FALSE on error
-	 */	
+	 */
 	protected function getRecord() {
 	    // need handler to the LEPTON database
         global $database;
-        
+
         // create Query string
         $SQL = "SELECT * FROM ".TABLE_PREFIX."mod_sample_admintool WHERE sample_id = '1'";
         if (false ===($query = $database->query($SQL))) {
@@ -249,7 +249,7 @@ class sample_admintool {
             $this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $database->get_error()));
             return false;
         }
-        
+
         if ($query->numRows() < 1) {
             // record does not exists yet
             $this->setFieldID(-1); // set field ID to -1 to indicate that record does not exists
@@ -257,34 +257,34 @@ class sample_admintool {
             $this->setFieldText(''); // set empty string
             return true;
         }
-        
+
         // fetch the record from the query result
         $record = $query->fetchRow(MYSQL_ASSOC); // MYSQL_ASSOC returns a record with field names as index
-        
+
         $this->setFieldID($record['sample_id']); // set field ID
         $this->setFieldSubject($record['sample_subject']); // set field subject
         $this->setFieldText($record['sample_text']); // set field text
         return true;
     } // getRecord()
-    
+
     /**
      * Set the database record to the values of the $record array
-     * 
+     *
      * Expects at least two fields in $record:
-     * 
+     *
      * $record['subject'] - the new value for the field sample_subject
      * $record['text'] - the new value for the field sample_text
      *
      * Set $this->message if record is changed or nothing to do.
      * Set $this->error on $database error
-     * 
+     *
      * @param array $record
      * @return boolean TRUE on success FALSE if nothing to do or on error
-     */    
+     */
     protected function setRecord($record = array()) {
         // need handler to LEPTON database
         global $database;
-        
+
         // set $changes to zero, which means: nothing to do
         $changes = 0;
         if (isset($record['subject'])) {
@@ -297,14 +297,14 @@ class sample_admintool {
             $this->setFieldText($record['text']);
             $changes++;
         }
-        
+
         if ($changes < 1) {
             // if record is empty return with a message
             $this->setMessage($this->lang('msg_record_empty'));
             return false;
         }
-        
-        
+
+
         if ($this->getFieldID() < 1) {
             // insert a new record
             $SQL =  "INSERT INTO ".TABLE_PREFIX."mod_sample_admintool (sample_id, sample_subject, sample_text) ".
@@ -313,7 +313,7 @@ class sample_admintool {
             if (!$database->query($SQL)) {
                 // on error save the database prompt and return false
                 $this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $database->get_error()));
-                return false;                
+                return false;
             }
             // set message on success
             $this->setMessage($this->lang('msg_insert_record'));
@@ -335,22 +335,22 @@ class sample_admintool {
             return true;
         }
     } // setRecord()
-    
+
     /**
-     * Submit the template $template with the data array $template_data to the 
+     * Submit the template $template with the data array $template_data to the
      * Dwoo template engine and return the resulting output.
-     * 
+     *
      * Set $this->error on any error and return the Dwoo error prompts
-     * 
+     *
      * @param string $template - the filename of the template (no path)
      * @param array $template_data - array with the data for the template
-     * 
+     *
      * @return string output or boolean false on error
      */
     protected function getTemplate($template, $template_data) {
         // need the parser
         global $parser;
-        
+
         try {
             // add the template path to the template file and call the parser
             $result = $parser->get($this->getTemplatePath() . $template, $template_data);
@@ -362,8 +362,8 @@ class sample_admintool {
         }
         return $result;
     } // getTemplate()
-    
-    
+
+
     /**
      * Prevent XSS Cross Site Scripting
      *
@@ -379,13 +379,14 @@ class sample_admintool {
         }
         return $request;
     } // xssPrevent()
-    
+
     /**
      * The action handler of the class sample_admintool
-     * 
+     *
      * @return string output of the result
      */
     public function action() {
+
         // allow any HTML or strip all requests to simple text?
         $html_allowed = array(self::REQUEST_TEXT);
         foreach ($_REQUEST as $key => $value) {
@@ -395,10 +396,10 @@ class sample_admintool {
                 $_REQUEST[$key] = $this->xssPrevent($value);
             }
         }
-        
+
         // get the desired action or the the action to default
         $action = isset($_REQUEST[self::REQUEST_ACTION]) ? $_REQUEST[self::REQUEST_ACTION] : self::ACTION_DEFAULT;
-        
+
         switch ($action):
         case self::ACTION_CHECK:
             // check if the dialog has changed ...
@@ -408,7 +409,7 @@ class sample_admintool {
             // in any other case simply show the dialog ...
             $result = $this->getDialog();
         endswitch;
-        
+
         if ($this->isError()) {
             // on any error return the error prompting
             echo $this->getError();
@@ -418,18 +419,18 @@ class sample_admintool {
             echo $result;
         }
     } // action()
-    
+
     /**
      * Return the dialog of sample_admintools with a input field for a subject
      * and a WYSIWYG editor for editing any text.
-     * 
+     *
      * @return string dialog
      */
     protected function getDialog() {
         /**
          * Use the LEPTON default WYSIWYG editor with the settings defined by
          * the WYSIWYG Admin.
-         * 
+         *
          * Because the show_wysiwyg_editor() function directly prompt the WYSIWYG
          * editor we must save the output of the function in a variable using
          * the PHP output buffer methods
@@ -440,26 +441,26 @@ class sample_admintool {
             show_wysiwyg_editor(self::REQUEST_TEXT, self::REQUEST_TEXT, $this->getFieldText());
             // using ob_get_contents() we get the prompt into the variable $editor
             $editor = ob_get_contents();
-        // close output buffer and clean up    
+        // close output buffer and clean up
         ob_end_clean();
-        
+
         /**
-         * All data needed by the template engine to fill out and execute the 
+         * All data needed by the template engine to fill out and execute the
          * template are given to the engine by a structured array.
          */
         $data = array(
                 // variables needed by the form
                 'form' => array(
                         // name of the form
-                        'name' => 'sample_form', 
+                        'name' => 'sample_form',
                         // target link for the form
-                        'action' => $this->toolLink, 
+                        'action' => $this->toolLink,
                         // the header of the form
-                        'head' => $this->lang('form_header'), 
+                        'head' => $this->lang('form_header'),
                         // tell the template if a message exists
                         'is_message' => $this->isMessage() ? 1 : 0,
-                        // show the dialog intro or a message? 
-                        'intro' => $this->isMessage() ? $this->getMessage() : $this->lang('form_intro'), 
+                        // show the dialog intro or a message?
+                        'intro' => $this->isMessage() ? $this->getMessage() : $this->lang('form_intro'),
                         'btn' => array(
                                 // label of the OK button
                                 'ok' => $this->lang('btn_ok'),
@@ -467,14 +468,14 @@ class sample_admintool {
                                 'abort' => $this->lang('btn_abort')
                                 )
                         ),
-                // variables needed for the action handler        
+                // variables needed for the action handler
                 'action' => array(
                         // field name for ACTION
                         'name' => self::REQUEST_ACTION,
-                        // the form will call the action CHECK the dialog 
+                        // the form will call the action CHECK the dialog
                         'value' => self::ACTION_CHECK
                         ),
-                // variables of the "dialog" - at least the database fields        
+                // variables of the "dialog" - at least the database fields
                 'dialog' => array(
                         // the subject field
                         'subject' => array(
@@ -500,11 +501,11 @@ class sample_admintool {
         // get the template for the dialog and return the result
         return $this->getTemplate('backend.dialog.lte', $data);
     } // getDialog()
-    
+
     /**
      * This function check the dialog for changes, calls the function setRecord()
      * if anything has changed and return the dialog of the class_admintool
-     * 
+     *
      * @return string dialog or boolean false on error
      */
     protected function checkDialog() {
@@ -513,7 +514,7 @@ class sample_admintool {
         if (isset($_REQUEST[self::REQUEST_SUBJECT]) && ($_REQUEST[self::REQUEST_SUBJECT] != $this->fieldSubject)) $record['subject'] = $_REQUEST[self::REQUEST_SUBJECT];
         // add $record['text'] if field is set and changed
         if (isset($_REQUEST[self::REQUEST_TEXT]) && ($_REQUEST[self::REQUEST_TEXT] != $this->fieldText)) $record['text'] = $_REQUEST[self::REQUEST_TEXT];
-        
+
         if (count($record) > 0) {
             // change the database record
             if (!$this->setRecord($record) && $this->isError()) return false;
@@ -524,7 +525,7 @@ class sample_admintool {
         $this->setMessage($this->lang('msg_nothing_changed'));
         return $this->getDialog();
     } // checkDialog()
-    
+
 } // class sample_admintool
 
 
