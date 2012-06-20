@@ -30,13 +30,5 @@ else {
 }
 // end include class.secure.php
 
-global $database;
-global $admin;
-
-$SQL = "DROP TABLE ".TABLE_PREFIX."mod_sample_admintool";
-
-$database->query($SQL);
-
-if ($database->is_error()) {
-    $admin->print_error('[UNINSTALL TABLE] '.$database->get_error());
-}
+// actual nothing to do - use this file to process updates in data records a.s.o.
+// this file will be automatically called by WebsiteBaker or LEPTON CMS
